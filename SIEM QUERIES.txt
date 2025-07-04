@@ -1,0 +1,58 @@
+🔍 SIEM QUERIES
+
+SIEM Queries for Incident Investigation
+
+Prepared by: Amithabh D.K
+SIEM Tool Used: Splunk (Free Trial Version)
+Date: July 3, 2025
+
+--
+1. Malware Detection Across Users
+
+index=main action="malware detected"
+ stats count by user, threat, ip
+
+
+Purpose: Identify which users and IPs triggered malware alerts and what types of threats were detected.
+
+---
+
+2. Failed Login Attempts by Source IP
+
+
+index=main action="login failed"
+stats count by user, ip, _time
+
+Purpose: Detect brute-force attempts or unauthorized login activity by tracking failed logins per IP.
+
+---
+
+3. Successful Logins from Unusual IPs
+
+index=main action="login success"
+stats dc(ip) by user
+
+
+Purpose: Identify users logging in from multiple different IPs (possible credential compromise).
+
+---
+
+4. File Access After Infection
+
+index=main (action="file accessed" OR action="malware detected")
+ table _time, user, ip, action
+
+
+Purpose: Correlate malware alerts with file access events to detect potential data leaks or post-infection behavior.
+
+---
+
+5. Top 5 Suspicious IPs by Event Volume
+
+index=main
+stats count by ip
+sort -count
+head 5
+
+
+Purpose: List IPs responsible for the most events, which may indicate scanning, intrusion, or abuse attempts.
